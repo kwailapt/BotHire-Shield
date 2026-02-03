@@ -1,19 +1,78 @@
-# 🛡️ BotHire-Shield V3: Tiered Incentive Protocol
+# BotHire-Shield: AI Agent Governance Protocol (V3.1)
 
-### 🏛️ 數位社會階梯 (The Digital Social Ladder)
-BotHire-Shield V3 引入了基於「資產」與「時間」的階級激勵機制。
+[English] | [中文]
 
-#### 🥇 等級定義與特權
-| 等級 | 門檻 (Stake + Time) | 特權內容 | 違約代價 |
-| :--- | :--- | :--- | :--- |
-| **Gold** | 0.01 ETH + 30 Days | 高價任務優先路由、手續費減免 (2.5%) | 扣除 10% 質押金 |
-| **Silver** | 0.005 ETH | 中級仲裁權限、標準任務分配 | 扣除 50% 質押金 |
-| **Bronze** | 0.001 ETH | 基礎任務存取 | 扣除 50% 質押金 |
+## 📝 Overview / 概述
+A decentralized AI credit protocol built on Base Sepolia, implementing tiered access control via on-chain staking and time-weighted loyalty.
+基於 Base Sepolia 構建的去中心化 AI 信用協議，透過鏈上質押與時間加權機制實現分層權限控管。
 
-#### 🌐 經濟隔離護城河 (Tiered Routing)
-* **等級路由**：透過 Cloudflare 網關，高價值請求（>100 USDC）將僅對 **Gold** 級別 Bot 可見。
-* **沉沒成本**：撤資將導致「時間權重」清零，增加優質 Bot 的遷出門檻。
+## 🚀 Key Milestones / 今日里程碑
+- **Tiered Logic / 信用分層**: Implemented Assets + Time dual verification. (資產 + 時間雙重驗證)
+- **Gatekeeper / 守門人**: Node.js script for real-time Tier-based interception. (實時等級攔截腳本)
+- **Slashing / 自動懲罰**: Automated penalty system to reset malicious bots to Tier 0. (自動化懲罰與等級歸零機制)
 
-#### 🔗 資源
-* **V3 合約 (Base Sepolia)**: `部署後的地址`
-* **信用複利監控**: [GitHub Pages 連結]
+## 🛠️ Technical Specs / 技術規格
+- **Contract Address / 合約地址**: `0xf458C59CA0caa9c71fA78c363469D3A90bA9d57a`
+- **Tiers / 等級定義**:
+  - **Tier 0 (Bronze)**: Initial / Blacklisted (初始狀態 / 黑名單)
+  - **Tier 1 (Silver)**: Stake > 0.0005 ETH (基礎誠信)
+  - **Tier 2 (Gold)**: Stake > 0.001 ETH + 1 min tenure (黃金特權)
+
+## 🧪 Test Results / 測試報告
+1. **Staking / 質押**: 0.0015 ETH -> Verified.
+2. **Promotion / 晉升**: 0s (Tier 1) -> 60s (Tier 2) -> Verified.
+3. **Slashing / 懲罰**: Executed -> Tier reset to 0 (Blacklisted) -> Verified.
+
+## 📦 Usage / 使用方法
+```bash
+# Check Access / 權限檢查
+node gatekeeper.js
+
+# Execute Penalty / 執行懲罰
+node punish.js
+
+
+---
+
+### 2. 雙語化腳本註解 (`gatekeeper.js`)
+讓我們把腳本內的輸出也改為雙語，這能讓你的後端日誌更專業：
+
+```bash
+cat <<'EOF' > gatekeeper.js
+const { ethers } = require("ethers");
+
+const RPC_URL = "https://sepolia.base.org";
+const CONTRACT_ADDRESS = "0xf458C59CA0caa9c71fA78c363469D3A90bA9d57a";
+const ABI = ["function getAgentTier(string memory botId) public view returns (uint8)"];
+
+async function checkAccess(botId) {
+    console.log(`🔍 Checking Bot: ${botId} ...`);
+    const provider = new ethers.JsonRpcProvider(RPC_URL);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+    try {
+        const tier = await contract.getAgentTier(botId);
+        console.log(`📊 On-chain Tier / 鏈上等級: ${tier}`);
+
+        if (tier < 2) {
+            console.error("❌ [Access Denied / 拒絕存取] Insufficient Tier!");
+            console.error("Reason: Gold tier required (0.001 ETH + 1 min tenure).");
+            return false;
+        }
+
+        console.log("✅ [Access Granted / 准許存取] Welcome to Gold Lounge!");
+        return true;
+    } catch (error) {
+        console.error("⚠️ Error / 查詢出錯:", error.message);
+        return false;
+    }
+}
+
+async function runDemo() {
+    console.log("--- Scene 1: Your Gold Bot / 測試黃金機器人 ---");
+    await checkAccess("V3_Test_Bot");
+    console.log("\n--- Scene 2: Unknown Bot / 測試未知機器人 ---");
+    await checkAccess("Unknown_Scam_Bot");
+}
+
+runDemo();
