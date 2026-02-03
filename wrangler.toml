@@ -1,0 +1,10 @@
+name = "bothire-shield-gateway"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "SHIELD_KV"
+id = "f1def33503274068ba20e6fa1c4f31a5"
+
+[vars]
+PROTOCOL_VERSION = "v1.0"
