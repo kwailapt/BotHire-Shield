@@ -1,4 +1,8 @@
 {
-  "bot_id": "Evil_Bot_666",
-  "error_trigger": "I_AM_MALICIOUS"
+  "bot_id": "Good_AI_Bot_001",
+  "version": "x402-v1",
+  "performance_threshold": {
+    "latency_ms": 200,
+    "accuracy_rate": 0.98
+  }
 }
