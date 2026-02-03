@@ -1,8 +1,8 @@
 {
-  "bot_id": "Good_AI_Bot_001",
+  "bot_id": "Certified_Safe_Bot_999",
   "version": "x402-v1",
   "performance_threshold": {
-    "latency_ms": 200,
-    "accuracy_rate": 0.98
+    "latency_ms": 150,
+    "accuracy_rate": 0.99
   }
 }
