@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "bot_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^v\\d+\\.\\d+$" },
+    "sla_guarantee": { "type": "number", "minimum": 0, "maximum": 1 }
+  },
+  "required": ["bot_id", "version"]
+}
