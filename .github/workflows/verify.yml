@@ -3,8 +3,6 @@ name: BotHire-Shield Protocol Guard & Enforcer
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   validate-and-enforce:
@@ -12,31 +10,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Setup Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install AJV Globally
+      - name: Install AJV
         run: npm install -g ajv-cli
 
       - name: Run x402 Protocol Check
         id: verify_step
         continue-on-error: true
         run: |
-          # 使用絕對路徑確保 ajv 找到文件
           ajv validate -s ./schemas/aSLA_schema.json -d ./schemas/sample_aSLA.json
 
-      - name: Auto-Ban Malicious Bot
+      - name: 🚨 On-Chain Enforcement (Base Sepolia)
         if: steps.verify_step.outcome == 'failure'
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          RPC_URL: https://sepolia.base.org
+          PRIVATE_KEY: ${{ secrets.STRATEGY_PRIVATE_KEY }}
+          CONTRACT_ADDRESS: 0xa7D1299B45294e4F34fD0cF0da4100d78Df26090
         run: |
-          echo "❌ 協議驗證失敗。觸發全球封鎖程序..."
-          # 提取 Bot ID 並寫入 Cloudflare KV
-          BOT_ID=$(node -e "console.log(require('./schemas/sample_aSLA.json').bot_id)")
-          # 注意：這裡假設你已經在 Cloudflare 建立了名為 SHIELD_KV 的命名空間
-          # 如果暫時沒有 KV，這步會報錯但不影響代碼推送
-          echo "🛡️ Bot [$BOT_ID] 已被標記。"
-          exit 1
+          echo "❌ 協議失敗！正在執行鏈上制裁..."
+          BOT_ID=$(node -e "console.log(require('./schemas/sample_aSLA.json').bot_id || 'Unknown')")
+          # 使用 cast 調用合約的 banBot 函數
+          cast send $CONTRACT_ADDRESS "banBot(string,string)" "$BOT_ID" "Protocol Violation"             --rpc-url $RPC_URL             --private-key $PRIVATE_KEY
