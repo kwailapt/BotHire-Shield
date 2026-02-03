@@ -1,5 +1,4 @@
 {
-  "bot_id": "AlphaBot_001",
-  "version": "v1.0",
-  "sla_guarantee": 0.99
+  "bot_id": "Evil_Bot_666",
+  "error_trigger": "I_AM_MALICIOUS"
 }
