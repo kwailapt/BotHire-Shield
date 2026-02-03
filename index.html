@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotHire-Shield 信用查詢台</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: #1e293b; padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); width: 400px; text-align: center; }
+        h2 { color: #38bdf8; margin-bottom: 1.5rem; }
+        input { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 1rem; box-sizing: border-box; }
+        button { background: #38bdf8; color: #0f172a; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; }
+        button:hover { background: #7dd3fc; }
+        #result { margin-top: 1.5rem; padding: 1rem; border-radius: 0.5rem; display: none; }
+        .success { background: #065f46; color: #34d399; }
+        .danger { background: #7f1d1d; color: #f87171; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🛡️ Shield 信用查詢</h2>
+        <input type="text" id="botId" placeholder="輸入 Bot ID (例如: Evil_Bot_666)">
+        <button onclick="checkBot()">立即查詢鏈上狀態</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const CONTRACT_ADDRESS = "0xa7D1299B45294e4F34fD0cF0da4100d78Df26090";
+        const ABI = [ "function isBotAllowed(string) view returns (bool)" ];
+        const RPC_URL = "https://sepolia.base.org";
+
+        async function checkBot() {
+            const botId = document.getElementById('botId').value;
+            const resultDiv = document.getElementById('result');
+            if (!botId) return alert("請輸入 Bot ID");
+
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = "正在查詢區塊鏈...";
+            resultDiv.className = "";
+
+            try {
+                const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+                const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+                
+                const isAllowed = await contract.isBotAllowed(botId);
+                
+                if (isAllowed) {
+                    resultDiv.className = "success";
+                    resultDiv.innerHTML = "✅ <b>" + botId + "</b> 信用良好<br>符合 x402 協議，准予接入。";
+                } else {
+                    resultDiv.className = "danger";
+                    resultDiv.innerHTML = "🚫 <b>" + botId + "</b> 已被封鎖<br>原因：違反協議 (Base 鏈存證)";
+                }
+            } catch (error) {
+                resultDiv.innerHTML = "查詢失敗: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
