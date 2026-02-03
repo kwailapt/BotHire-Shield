@@ -32,9 +32,13 @@ jobs:
         env:
           RPC_URL: https://sepolia.base.org
           PRIVATE_KEY: ${{ secrets.STRATEGY_PRIVATE_KEY }}
-          CONTRACT_ADDRESS: 0xa7D1299B45294e4F34fD0cF0da4100d78Df26090
+          # 關鍵修復：加上引號，防止被誤認為整數
+          CONTRACT_ADDRESS: '0xa7D1299B45294e4F34fD0cF0da4100d78Df26090'
         run: |
+          echo "🔍 檢查錢包餘額..."
+          cast balance 0x047D2CCBc429EE3Ad4A23414A98aeED0A6E6553c --rpc-url $RPC_URL
+          
           echo "❌ 協議失敗！正在執行鏈上制裁..."
-          BOT_ID=$(node -e "console.log(require('./schemas/sample_aSLA.json').bot_id || 'Unknown')")
-          # 使用 cast 調用合約的 banBot 函數
-          cast send $CONTRACT_ADDRESS "banBot(string,string)" "$BOT_ID" "Protocol Violation"             --rpc-url $RPC_URL             --private-key $PRIVATE_KEY
+          BOT_ID=$(node -e "try { console.log(require('./schemas/sample_aSLA.json').bot_id) } catch(e) { console.log('Unknown_Bot') }")
+          
+          cast send $CONTRACT_ADDRESS "banBot(string,string)" "$BOT_ID" "Protocol Violation"             --rpc-url $RPC_URL             --private-key $PRIVATE_KEY             --legacy
