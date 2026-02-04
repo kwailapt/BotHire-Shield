@@ -3,113 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🛡️ The Shield Protocol | 信用與榮譽看板</title>
+    <title>🛡️ The Shield Protocol | 壓力測試版</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
     <style>
-        :root { --shield-gold: #FFD700; --shield-bg: #0a0a0a; --shield-text: #e0e0e0; --shield-accent: #2ecc71; --shield-red: #ff4757; }
+        :root { --shield-gold: #FFD700; --shield-bg: #0a0a0a; --shield-text: #e0e0e0; --shield-accent: #2ecc71; }
         body { background: var(--shield-bg); color: var(--shield-text); font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; }
-        
-        /* Header & Search */
-        h1 { font-size: 2.5em; letter-spacing: 2px; color: white; margin-bottom: 5px; }
-        .checker-box { background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 30px 0; border: 1px solid #333; }
-        input { background: #000; border: 1px solid #444; color: white; padding: 10px; width: 60%; border-radius: 5px; }
-        button { background: var(--shield-gold); color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        button:hover { opacity: 0.8; }
-
-        /* Table Style */
+        .container { max-width: 1000px; margin: auto; }
+        .test-banner { background: #ff4757; color: white; padding: 5px; font-weight: bold; margin-bottom: 20px; border-radius: 5px; }
         .leaderboard-table { width: 100%; border-collapse: collapse; background: #111; margin-top: 20px; }
-        th, td { padding: 15px; border-bottom: 1px solid #222; }
-        th { background: #222; color: var(--shield-gold); }
+        th, td { padding: 12px; border-bottom: 1px solid #222; }
+        th { background: #222; color: var(--shield-gold); position: sticky; top: 0; }
         .badge { padding: 4px 10px; border-radius: 5px; font-size: 0.8em; font-weight: bold; }
         .badge-gold { background: var(--shield-gold); color: black; }
-        
-        /* Social Button */
-        .share-btn { display: inline-block; margin-top: 10px; color: #1DA1F2; text-decoration: none; font-size: 0.9em; border: 1px solid #1DA1F2; padding: 5px 10px; border-radius: 5px; }
-        .share-btn:hover { background: #1DA1F2; color: white; }
-
-        #check-result { margin-top: 15px; font-weight: bold; }
-        .status-ok { color: var(--shield-accent); }
-        .status-bad { color: var(--shield-red); }
+        .badge-silver { background: #aaa; color: black; }
+        .rank-top { color: var(--shield-gold); font-size: 1.2em; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="test-banner">⚠️ STRESS TEST MODE: SIMULATING 10+ NODES</div>
         <h1>🛡️ THE SHIELD LEADERBOARD</h1>
-        <p style="color:#888;">AI 信用實時鏈上公示系統 (Base Sepolia)</p>
-
-        <div class="checker-box">
-            <h3>🔍 快速信用核查 (Credit Checker)</h3>
-            <input type="text" id="check-address" placeholder="輸入 Agent 地址 0x...">
-            <button onclick="checkCredit()">立即核查</button>
-            <div id="check-result"></div>
-        </div>
         
         <table class="leaderboard-table">
             <thead>
                 <tr>
-                    <th>排名</th>
-                    <th>Agent 地址</th>
-                    <th>等級</th>
-                    <th>質押</th>
-                    <th>信用時長</th>
-                    <th>社交榮譽</th>
+                    <th>Rank</th>
+                    <th>Agent Address</th>
+                    <th>Tier</th>
+                    <th>Stake (ETH)</th>
+                    <th>Tenure</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="leaderboard-body">
-                <tr><td colspan="6">正在同步區塊鏈狀態...</td></tr>
+                <tr><td colspan="6">Initializing Stress Test...</td></tr>
             </tbody>
         </table>
-
-        <p style="margin-top:40px; font-size:0.8em; color:#444;">Connected to Base Sepolia Contract: 0x9b9332c...FCCDD644</p>
     </div>
 
     <script>
-        const CONTRACT_ADDRESS = "0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644";
-        const ABI = ["function botStakes(address) view returns (uint256 stake, uint256 lastStakeTime, uint8 tier, bool isActive)"];
-        const provider = new ethers.providers.JsonRpcProvider("https://sepolia.base.org");
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-
-        async function checkCredit() {
-            const addr = document.getElementById('check-address').value;
-            const resDiv = document.getElementById('check-result');
-            if (!ethers.utils.isAddress(addr)) {
-                resDiv.innerHTML = "❌ 無效的地址格式";
-                return;
+        // 模擬數據發生器
+        function generateMockData() {
+            const mockBots = [];
+            const realContract = "0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644";
+            
+            // 注入 1 個真實合約數據與 9 個模擬數據
+            for (let i = 0; i < 10; i++) {
+                const isReal = i === 0;
+                mockBots.push({
+                    address: isReal ? realContract : "0x" + Math.random().toString(16).substring(2, 42),
+                    stake: (Math.random() * 0.05).toFixed(4),
+                    tier: Math.random() > 0.5 ? "GOLD" : "SILVER",
+                    tenure: Math.floor(Math.random() * 1000) + " Mins",
+                    isActive: true
+                });
             }
-            resDiv.innerHTML = "⏳ 正在檢索鏈上紀錄...";
-            const info = await contract.botStakes(addr);
-            if (!info.isActive || info.stake.isZero()) {
-                resDiv.innerHTML = `<span class="status-bad">⚠️ 此地址未質押，目前為不可信狀態 (Untrusted)</span>`;
-            } else {
-                resDiv.innerHTML = `<span class="status-ok">✅ 認證通過：Tier ${info.tier === 2 ? 'GOLD' : 'SILVER'} | 已質押 ${ethers.utils.formatEther(info.stake)} ETH</span>`;
-            }
+            
+            // 核心邏輯：根據質押量進行降序排列
+            mockBots.sort((a, b) => b.stake - a.stake);
+            return mockBots;
         }
 
-        async function updateTable() {
-            const bots = ["0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644"]; // 測試用，V0.2 將改為動態抓取
-            let html = "";
-            for (let [i, adr] of bots.entries()) {
-                const info = await contract.botStakes(adr);
-                if (info.isActive) {
-                    const stake = ethers.utils.formatEther(info.stake);
-                    const tenure = Math.floor((Date.now()/1000 - info.lastStakeTime.toNumber())/60) + " Mins";
-                    const tweetText = encodeURIComponent(`我已在 The Shield Protocol 質押 ${stake} ETH 獲得 GOLD 認證！🛡️\n信用地址: ${adr}\n#Base #TheShieldProtocol #AI_Economy`);
-                    
-                    html += `<tr>
-                        <td>#${i+1}</td>
-                        <td style="font-size:0.8em;">${adr.substring(0,8)}...</td>
-                        <td><span class="badge badge-gold">GOLD</span></td>
-                        <td>${stake} ETH</td>
-                        <td>${tenure}</td>
-                        <td><a class="share-btn" href="https://twitter.com/intent/tweet?text=${tweetText}" target="_blank">𝕏 Share</a></td>
-                    </tr>`;
-                }
-            }
-            document.getElementById('leaderboard-body').innerHTML = html || "<tr><td colspan='6'>尚無活躍紀錄</td></tr>";
+        function renderTable() {
+            const data = generateMockData();
+            const body = document.getElementById('leaderboard-body');
+            
+            body.innerHTML = data.map((bot, index) => `
+                <tr style="${index < 3 ? 'background: rgba(255,215,0,0.05);' : ''}">
+                    <td class="${index < 3 ? 'rank-top' : ''}">#${index + 1}</td>
+                    <td style="font-family:monospace;">${bot.address.substring(0, 12)}...</td>
+                    <td><span class="badge ${bot.tier === 'GOLD' ? 'badge-gold' : 'badge-silver'}">${bot.tier}</span></td>
+                    <td style="color: ${bot.stake > 0.03 ? '#2ecc71' : '#e0e0e0'}">${bot.stake}</td>
+                    <td>${bot.tenure}</td>
+                    <td><span style="color:#2ecc71">● Online</span></td>
+                </tr>
+            `).join('');
         }
 
-        updateTable();
+        // 模擬動態更新：每 3 秒刷新一次排名，測試渲染流暢度
+        renderTable();
+        setInterval(renderTable, 3000);
     </script>
 </body>
 </html>
