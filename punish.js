@@ -1,3 +1,7 @@
+/**
+ * @title BotHire: The Shield Protocol (V4.0) - The Executioner
+ * @notice "Automated Slashing Module: Code is Law, and Law has a Price."
+ */
 const { ethers } = require("ethers");
 require('dotenv').config();
 

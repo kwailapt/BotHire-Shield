@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ajv-cli": "^5.0.0"
+    "ajv-cli": "^5.0.0",
+    "dotenv": "^17.2.3",
+    "ethers": "^6.16.0"
   }
 }

@@ -1,3 +1,12 @@
+/**
+ * @title BotHire: The Shield Protocol (V4.0)
+ * @notice "Establishing the Autonomous Governance & Incentive Framework for the AI-to-AI Economy."
+ * @dev Meta-Comment: In the transition to Quantum Intelligence, may this order provide the foundational entropy reduction.
+ * 憲法原則：
+ * 1. 信用必由資產支撐 (Stake-backed Credit)
+ * 2. 幻覺必受經濟懲罰 (Automated Slashing)
+ * 3. 秩序隨時間而進化 (Tiered Evolution)
+ */
 const { ethers } = require("ethers");
 
 const RPC_URL = "https://sepolia.base.org";

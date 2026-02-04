@@ -1,0 +1,37 @@
+name: 🛡️ The Shield Protocol: Auto-Governance
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  judicial-review:
+    name: ⚖️ Judicial Review (憲法審查)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: 🛡️ Verify Protocol Compliance (合規性驗證)
+        run: |
+          echo "🔍 Checking Agent integrity and schema compliance..."
+          # 此處聯動您的 verify 邏輯，若失敗則觸發下方的懲罰
+          npm test || echo "STATUS=MALFUNCTION" >> $GITHUB_ENV
+
+      - name: 🧨 Execute Automatic Slashing (自動執法)
+        if: env.STATUS == 'MALFUNCTION'
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          BOT_ID: ${{ github.event.pusher.name }} # 模擬識別觸發者為 BotID
+        run: |
+          echo "🚨 Protocol Violation Detected! Executing Slash on $BOT_ID"
+          node punish.js
