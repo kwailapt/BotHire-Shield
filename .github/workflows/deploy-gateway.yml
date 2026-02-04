@@ -1,0 +1,19 @@
+name: Sync-Flow (Deploy Gateway)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'gateway-worker.js'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: deploy gateway-worker.js --name bothire-shield-gateway
