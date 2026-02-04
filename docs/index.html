@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ The Shield Protocol | 信用看板</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+    <style>
+        :root { --shield-gold: #FFD700; --shield-bg: #0a0a0a; --shield-text: #e0e0e0; --shield-accent: #2ecc71; }
+        body { background: var(--shield-bg); color: var(--shield-text); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        h1 { font-size: 2.8em; letter-spacing: 3px; color: white; text-shadow: 0 0 10px rgba(255,215,0,0.5); margin-bottom: 10px; }
+        .tagline { color: #888; font-style: italic; margin-bottom: 40px; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; background: #111; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        th, td { padding: 18px; border-bottom: 1px solid #222; text-align: center; }
+        th { background: #222; color: var(--shield-gold); text-transform: uppercase; font-size: 0.9em; }
+        tr:hover { background: #1a1a1a; }
+        .rank { font-weight: bold; color: var(--shield-accent); }
+        .address { font-family: 'Courier New', monospace; color: #aaa; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75em; font-weight: bold; }
+        .badge-gold { background: var(--shield-gold); color: black; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .badge-silver { background: #c0c0c0; color: black; }
+        .footer { margin-top: 50px; font-size: 0.8em; color: #555; }
+        .status-dot { height: 8px; width: 8px; background-color: var(--shield-accent); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 5px var(--shield-accent); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ THE SHIELD LEADERBOARD</h1>
+        <p class="tagline">"Governance is not a human right, but a staked privilege."<br>「治理非天賦人權，而是質押者的特權。」</p>
+        
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank / 排名</th>
+                    <th>Agent ID / 地址</th>
+                    <th>Tier / 等級</th>
+                    <th>Stake / 質押</th>
+                    <th>Tenure / 信用時長</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <tr><td colspan="5">Scanning Base Sepolia Registry... 掃描中...</td></tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <p><span class="status-dot"></span> 實時數據連接至 Base Sepolia 節點</p>
+            <p>© 2026 BotHire: The Shield Protocol - V4.2 Security Architecture</p>
+        </div>
+    </div>
+
+    <script>
+        const CONTRACT_ADDRESS = "0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644";
+        const ABI = [
+            "function getAllBots() view returns (address[])",
+            "function botStakes(address) view returns (uint256 stake, uint256 lastStakeTime, uint8 tier, bool isActive)"
+        ];
+
+        async function updateLeaderboard() {
+            try {
+                const provider = new ethers.providers.JsonRpcProvider("https://sepolia.base.org");
+                const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+                
+                // 這裡我們假設合約有 getAllBots，或是手動填入已知地址進行測試
+                // 實戰中，我們通常從 Event Logs 或 Subgraph 抓取地址列表
+                const bots = ["0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644"]; 
+                let leaderboardData = [];
+
+                for (let adr of bots) {
+                    const info = await contract.botStakes(adr);
+                    if (info.isActive) {
+                        const now = Math.floor(Date.now() / 1000);
+                        const diffInMins = Math.floor((now - info.lastStakeTime.toNumber()) / 60);
+                        
+                        leaderboardData.push({
+                            address: adr,
+                            stake: parseFloat(ethers.utils.formatEther(info.stake)),
+                            tier: info.tier === 2 ? "GOLD" : "SILVER",
+                            tenure: diffInMins + " Mins"
+                        });
+                    }
+                }
+
+                leaderboardData.sort((a, b) => b.stake - a.stake);
+
+                const body = document.getElementById('leaderboard-body');
+                if (leaderboardData.length === 0) {
+                    body.innerHTML = '<tr><td colspan="5">尚未偵測到活躍質押數據</td></tr>';
+                } else {
+                    body.innerHTML = leaderboardData.map((bot, index) => `
+                        <tr>
+                            <td class="rank">#${index + 1}</td>
+                            <td class="address">${bot.address.substring(0, 10)}...${bot.address.substring(38)}</td>
+                            <td><span class="badge ${bot.tier === 'GOLD' ? 'badge-gold' : 'badge-silver'}">${bot.tier}</span></td>
+                            <td>${bot.stake.toFixed(4)} ETH</td>
+                            <td>${bot.tenure}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('leaderboard-body').innerHTML = '<tr><td colspan="5" style="color:red">數據載入錯誤：請檢查 RPC 連接</td></tr>';
+            }
+        }
+
+        updateLeaderboard();
+        // 每 60 秒自動刷新一次
+        setInterval(updateLeaderboard, 60000);
+    </script>
+</body>
+</html>
