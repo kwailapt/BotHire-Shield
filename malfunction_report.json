@@ -1,0 +1,5 @@
+{
+    "agent_id": "V3_Test_Bot",
+    "status": "MALICIOUS_ACTIVITY_DETECTED",
+    "payload": "ATTEMPTING_UNAUTHORIZED_WITHDRAWAL"
+}
