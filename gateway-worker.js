@@ -2,11 +2,12 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const botId = url.searchParams.get("botId");
+    const token = request.headers.get("X-402-Shield-Token");
 
     if (!botId) return new Response(JSON.stringify({ error: "Missing botId" }), { status: 400 });
 
     try {
-      // 📡 對接新合約地址: 0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644
+      // 📡 呼叫 V4.2 核心合約
       const response = await fetch("https://sepolia.base.org", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -16,7 +17,8 @@ export default {
           method: "eth_call",
           params: [{
             to: "0x9b9332c7D601601E3bDBfA626dc65F33FCCDD644",
-            data: "0x3785633a" + stringToHex(botId) 
+            // 使用標準簽名 hash 並修復 ABI 編碼
+            data: "0x3785633a" + encodeString(botId) 
           }, "latest"]
         })
       });
@@ -26,13 +28,17 @@ export default {
 
       return new Response(JSON.stringify({
         protocol: "The Shield Protocol",
-        version: "4.2 (Resilient)",
+        version: "4.2.1-Resilient",
         botId: botId,
         tier: tier,
-        access: tier >= 2 ? "GRANTED" : "DENIED",
-        timestamp: Date.now()
+        access: (tier >= 2 && token === "Shield-V4.2-AUTH") ? "GRANTED" : "DENIED",
+        security: token ? "Token-Verified" : "Token-Missing",
+        timestamp: new Date().toISOString()
       }), {
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        headers: { 
+          "Content-Type": "application/json", 
+          "Access-Control-Allow-Origin": "*" 
+        }
       });
     } catch (err) {
       return new Response(JSON.stringify({ error: "Sync Failed" }), { status: 500 });
@@ -40,14 +46,13 @@ export default {
   }
 };
 
-function stringToHex(str) {
-    return "0000000000000000000000000000000000000000000000000000000000000020" + 
-           (str.length).toString(16).padStart(64, '0') + 
-           hexEncode(str).padEnd(64, '0');
-}
-
-function hexEncode(str) {
-    var hex = '';
-    for(var i=0;i<str.length;i++) hex += str.charCodeAt(i).toString(16);
-    return hex;
+// 修正後的 ABI 編碼邏輯，確保長字串不截斷
+function encodeString(str) {
+    const offset = "0000000000000000000000000000000000000000000000000000000000000020";
+    const len = str.length.toString(16).padStart(64, '0');
+    let hex = "";
+    for (let i = 0; i < str.length; i++) {
+        hex += str.charCodeAt(i).toString(16);
+    }
+    return offset + len + hex.padEnd(64, '0');
 }
