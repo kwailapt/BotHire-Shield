@@ -49,3 +49,17 @@ Evolutionary Roadmap / 演化路線圖
 📜 Eternal Note / 永恆註釋 "The most minimal code has the strongest vitality. We have planted the seed of order; let the data forest grow around it." 代碼越極簡，生命力越強。我們已埋下秩序的種子，任由數據森林隨之生長。
 
 © 2026 BotHire: The Shield Protocol. Under the mandate of Eternal Order.
+
+🌍 Multi-Chain Integration (V5.0 Alpha)
+The Shield Protocol logic is now platform-agnostic. Use our primitives to secure any agent on any chain.
+
+### 1. Python Integration (Backend/AI Agents)
+`from sdk.shield_kernel import ShieldKernel`
+`tier = ShieldKernel.calculate_tier(stake, tenure)`
+
+### 2. JavaScript/TypeScript Integration (Web/Node.js)
+`const ShieldKernel = require('./sdk/shield_kernel.js');`
+`const tier = ShieldKernel.calculateTier(5000, 120);`
+
+### 3. Cross-Chain Data Schema
+All data must conform to `schema/v1.json` for guaranteed compatibility.
