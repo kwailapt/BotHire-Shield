@@ -1,17 +1,14 @@
 {
-  "name": "bothire-shield",
+  "name": "@shield-protocol/core",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "798 High-Performance WASM Credit Kernel for AI Agents",
+  "main": "sdk/shield_kernel.js",
+  "browser": "sdk/shield_wasm/pkg/shield_kernel.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/monad_speed_test.py",
+    "build": "./build_wasm.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "ajv-cli": "^5.0.0",
-    "dotenv": "^17.2.3",
-    "ethers": "^6.16.0"
-  }
+  "keywords": ["ai", "agent", "credit", "wasm", "solana", "base", "monad"],
+  "author": "Commander & Gemini-798",
+  "license": "MIT"
 }
