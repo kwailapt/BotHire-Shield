@@ -63,3 +63,17 @@ The Shield Protocol logic is now platform-agnostic. Use our primitives to secure
 
 ### 3. Cross-Chain Data Schema
 All data must conform to `schema/v1.json` for guaranteed compatibility.
+
+## 👻 The Ghost Integration (5KB Quick Start)
+Stop complex setups. Secure your Telegram/Discord AI Bot in 30 seconds.
+
+1. **Copy** `sdk/shield_ghost.py` into your bot project.
+2. **Protect** any command with one line:
+
+```python
+import shield_ghost
+
+def on_private_command(agent_data):
+    if not shield_ghost.check_access(agent_data.stake, agent_data.tenure):
+        return "🚫 Access Denied: Credit Tier too low."
+    return "✅ Secret Logic Executed."
