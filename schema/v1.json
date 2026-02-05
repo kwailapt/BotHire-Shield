@@ -1,0 +1,38 @@
+{
+  "$schema": "https://shield-protocol.org/schema/v1",
+  "title": "Shield Universal Credit Schema",
+  "description": "Standardized data format for cross-chain AI credit verification",
+  "type": "object",
+  "required": ["version", "origin", "identity", "metrics", "proof"],
+  "properties": {
+    "version": { "type": "string", "example": "1.0.0" },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "chain_id": { "type": "string", "description": "e.g., 'base:8453' or 'solana:mainnet'" },
+        "timestamp": { "type": "integer", "description": "Unix timestamp of data generation" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "address": { "type": "string", "description": "The on-chain wallet or Agent ID" },
+        "platform": { "type": "string", "enum": ["evm", "svm", "off-chain"] }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "stake": { "type": "string", "description": "Raw amount in smallest unit (e.g., wei)" },
+        "tenure": { "type": "integer", "description": "Total days of active staking" }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "properties": {
+        "signature": { "type": "string", "description": "Cryptographic proof from the origin" },
+        "attestation_node": { "type": "string", "description": "The node that verified this metric" }
+      }
+    }
+  }
+}
