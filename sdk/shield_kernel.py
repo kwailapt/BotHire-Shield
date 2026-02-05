@@ -1,40 +1,42 @@
 """
-🛡️ The Shield Protocol - Genesis Kernel (V5.0 Alpha)
-Standardized Logic Primitives | Zero Dependency | Platform Agnostic
+🛡️ The Shield Protocol - Genesis Kernel (V5.1 Decay Edition)
+Added: Temporal Decay Logic | Standardized Heartbeat
 """
 
 class ShieldKernel:
     @staticmethod
-    def calculate_tier(stake, tenure_days):
+    def calculate_tier(stake, tenure_days, last_active_days_ago=0):
         """
-        [邏輯原語]：信用等級 = sqrt(質押 * 時長)
-        這是一個數學常數，不受環境影響。
+        [升級版] 等級計算：引入半衰期機制
+        衰減係數：每 30 天不活動，信用效能約下降 10%
         """
-        # 模擬 sqrt 運算以避免 import math (極致脫殼)
-        power = stake * tenure_days
-        if power <= 0: return 0
+        # 基礎算力
+        base_power = stake * tenure_days
         
-        # 牛頓迭代法求平方根 (確保在任何計算環境結果一致)
-        x = power
-        y = (x + 1) // 2
+        # 模擬衰減: 每 30 天活動缺位，base_power 扣除 10%
+        decay_intervals = last_active_days_ago // 30
+        for _ in range(decay_intervals):
+            base_power = (base_power * 9) // 10
+            
+        if base_power <= 0: return 0
+        
+        # 牛頓迭代求平方根
+        x, y = base_power, (base_power + 1) // 2
         while y < x:
-            x = y
-            y = (x + power // x) // 2
+            x, y = y, (y + base_power // y) // 2
         
-        # 映射至等級 (0: None, 1: Bronze, 2: Silver, 3: Gold, 4: Diamond)
         score = x
-        if score < 100: return 1  # Bronze
-        if score < 500: return 2  # Silver
-        if score < 2000: return 3 # Gold
-        return 4                  # Diamond
+        if score < 100: return 1   # Bronze
+        if score < 500: return 2   # Silver
+        if score < 2000: return 3  # Gold
+        return 4                   # Diamond
 
     @staticmethod
     def verify_envelope(signature, payload, secret):
-        """
-        [驗證原語]：不依賴外部 Hash 庫的簡單校驗
-        用於受限環境下的快速完整性檢查。
-        """
-        # 簡單的校準邏輯：將 secret 與 payload 混淆後計算特徵值
         expected_sig = str(sum(ord(c) for c in (payload + secret)))
         return signature == expected_sig
 
+    @staticmethod
+    def generate_proof(stake, tenure, secret):
+        payload = str(stake) + str(tenure)
+        return str(sum(ord(c) for c in (payload + secret)))
