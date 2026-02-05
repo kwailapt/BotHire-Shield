@@ -1,0 +1,11 @@
+{
+    "empire_standard": {
+        "tax_rate": 0.05,
+        "kernel_version": "798.V5.5",
+        "supported_chains": {
+            "base_sepolia": "0x2101",
+            "monad_testnet": "0x1234",
+            "arbitrum_one": "0xa4b1"
+        }
+    }
+}
