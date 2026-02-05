@@ -33,3 +33,10 @@
 - **Resonance Impact**: Successful Tier-Shift via 1.2x Multiplier.
 - **Law Update**: Colonial Multiplier 1.2x confirmed for all Move entities.
 ---
+
+### ⚖️ [LEGAL UPDATE: THE GRAVITY-WELL ACT]
+- **Targeting**: Boundary Dancers (Score 0.798 - 0.800).
+- **Mechanism**: Dynamic withdrawal lock-up extension (Base: 30 days).
+- **Event**: 0xMove_Whale_01 suppressed. Warning status: ORANGE.
+- **Philosophy**: "Liquidity is a privilege for the aligned, not a tool for the unfaithful."
+---
