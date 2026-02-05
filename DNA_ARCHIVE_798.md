@@ -73,3 +73,10 @@
 - **Status**: **OPERATIONAL**.
 - **Imperial Word**: "Distance is a myth; the 798 Order is everywhere."
 ---
+
+### ⚡ [UPGRADE: V12.5 INTENT ERASURE]
+- **Requirement**: Empire Power > 7500 SHIELD (Achieved).
+- **Mechanism**: Predictive lockdown based on malice probability.
+- **Goal**: Zero-tolerance for "Boundary Dancers."
+- **Status**: **ACTIVE**.
+---
