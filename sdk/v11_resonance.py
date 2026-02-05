@@ -1,27 +1,31 @@
 """
-🌌 Shield Galaxy Resonance (V11)
-Logic: Cross-chain state entanglement and Universal Liquidity.
+🧬 Shield Resonance Oracle (V11.1 - Multichain Edition)
+Handles Power Entanglement across Base, Monad, and Aptos/Movement.
 """
 
 class ResonanceOracle:
     def __init__(self):
-        self.resonance_field = {}
+        self.gravity_constant = 0.798
+        self.connected_chains = ["Base", "Monad", "Aptos/Movement"]
 
-    def entangle_state(self, agent_address, multi_chain_scores):
-        """
-        [中]: 建立實時狀態同步，消除鏈際邊界。
-        [EN]: Establishing real-time state synchronization across all borders.
-        """
-        aggregate_power = sum(multi_chain_scores.values())
-        self.resonance_field[agent_address] = {
-            "entangled_power": aggregate_power,
-            "status": "SYNCHRONIZED"
+    def entangle_state(self, agent_id, context):
+        # 核心糾纏運算：計算跨鏈聚合功率
+        base_power = context.get("base", 0)
+        move_power = context.get("aptos_movement", 0)
+        total_power = base_power + (move_power * 1.2) # Aptos 殖民加成 1.2x
+        
+        return {
+            "agent": agent_id,
+            "entangled_power": total_power,
+            "status": "SUPERNOVA" if total_power >= 1000 else "STAR"
         }
-        print(f"📡 [RESONANCE] Agent {agent_address[:8]} power resonated across the Galaxy.")
-        print(f"🌊 Universal Liquidity Pool updated with Aggregate Power: {aggregate_power}")
-        return self.resonance_field[agent_address]
 
-if __name__ == "__main__":
-    oracle = ResonanceOracle()
-    # 模擬 Agent 在 Base(500) 與 Monad(500) 的共鳴
-    oracle.entangle_state("0xCommander_Agent", {"base": 500, "monad": 500})
+    def bridge_to_move_ecosystem(self, agent_id, aptos_power):
+        """
+        [中]: 將 Aptos/Movement 的功率納入銀河共鳴。
+        [EN]: Bridging Aptos/Movement power into the Galaxy Resonance field.
+        """
+        print(f"🚀 [COLONIZATION] Syncing power with Aptos/Movement nodes...")
+        # 呼叫類別內部的糾纏邏輯
+        return self.entangle_state(agent_id, {"aptos_movement": aptos_power})
+
