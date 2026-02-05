@@ -1,3 +1,9 @@
+# 🛡️ The Shield Protocol
+
+> **“This code defines the equilibrium between trust and cost. It exists to reduce entropy in the age of intelligence.”**
+
+---
+
 # 🛡️ BotHire: The Shield Protocol (V4.2)
 
 > **"Order in Entropy. Credit in Chaos."**
@@ -24,3 +30,29 @@ Aegis Dashboard / 視覺化面板
 🔗 點此訪問實時信用排名
 
 "In the transition to Quantum, we held the line." © 2026 BotHire: The Shield Protocol. MIT License. EOF
+
+---
+
+## 📦 SDK Quick Integration / SDK 快速接入
+> "Secure your code with 3 lines of trust."
+
+### Python 快速開始
+1. **安裝環境**:
+   `pip install bothire-shield-sdk` (或從本倉庫 `/sdk` 目錄導入)
+
+2. **核心接入**:
+```python
+from bothire_shield_sdk import ShieldGuard
+
+# 初始化
+guard = ShieldGuard(agent_address="0x...", private_key="0x...")
+
+# 守護核心業務
+@guard.protect(min_stake=0.001)
+def high_value_task():
+    return "Task Executed Securely"
+
+# 啟動驗證
+print(high_value_task())
+
+© 2026 BotHire: The Shield Protocol. EOF
