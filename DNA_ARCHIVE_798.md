@@ -24,3 +24,12 @@
 
 **[Timestamp]**: 2026.02.05 18:00 (Imperial Standard Time)
 **[Authority]**: COMMANDER SIGNATURE VERIFIED
+
+---
+
+### 🌌 [COLONIAL LOG: APTOS/MOVEMENT INITIAL WAVE]
+- **Migrants**: 0xMove_Whale_01, 0xMove_Whale_02.
+- **Aggregated Power**: 3480.0.
+- **Resonance Impact**: Successful Tier-Shift via 1.2x Multiplier.
+- **Law Update**: Colonial Multiplier 1.2x confirmed for all Move entities.
+---
