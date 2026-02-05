@@ -1,37 +1,39 @@
 """
-🛡️ Shield Treasury Module (V5.5 DAO Edition)
-Function: Credit-Based Reward Distribution Logic
+🛡️ Shield Treasury Module (V7.4 Diplomacy Edition)
+Function: Credit-Based Rewards with Whitelist Tax Exemption
 """
 from sdk.shield_kernel import ShieldKernel
 
 class ShieldTreasury:
-    # 定義等級獎勵乘數 (Tier Multipliers)
-    MULTIPLIERS = {
-        4: 2.5,  # DIAMOND: 2.5x 獎勵
-        3: 1.5,  # GOLD: 1.5x 獎勵
-        2: 1.0,  # SILVER: 基準獎勵
-        1: 0.5,  # BRONZE: 減半獎勵
-        0: 0.0   # NO ACCESS
-    }
+    MULTIPLIERS = {4: 2.5, 3: 1.5, 2: 1.0, 1: 0.5, 0: 0.0}
+    TAX_RATE = 0.05
+    
+    # [貴族名冊]：存儲擁有豁免權的錢包地址
+    WHITELIST = set()
+
+    @classmethod
+    def add_to_whitelist(cls, address):
+        cls.WHITELIST.add(address)
 
     @staticmethod
-    def calculate_reward(base_amount, stake, tenure, last_active=0):
-        """
-        [經濟激勵]：根據 Agent 的信用等級計算獎勵分配
-        公式: Final Reward = Base * TierMultiplier
-        """
-        # 1. 獲取當前信用等級 (包含半衰期衰減)
-        tier = ShieldKernel.calculate_tier(stake, tenure, last_active)
+    def calculate_reward(address, base_amount, stake, tenure, last_active=0):
+        # 判斷是否擁有「外交豁免權」
+        is_exempt = address in ShieldTreasury.WHITELIST
         
-        # 2. 獲取對應乘數
+        # 1. 計算稅收 (豁免者稅率為 0)
+        actual_tax_rate = 0 if is_exempt else ShieldTreasury.TAX_RATE
+        tax_amount = base_amount * actual_tax_rate
+        distributable_pool = base_amount - tax_amount
+        
+        # 2. 獲取信用等級
+        tier = ShieldKernel.calculate_tier(stake, tenure, last_active)
         multiplier = ShieldTreasury.MULTIPLIERS.get(tier, 0.0)
         
-        # 3. 計算最終分紅
-        final_reward = base_amount * multiplier
-        
         return {
+            "address": address,
             "tier": tier,
-            "multiplier": multiplier,
-            "reward": final_reward,
-            "status": "APPROVED" if multiplier > 0 else "REJECTED"
+            "is_exempt": is_exempt,
+            "commander_tax": tax_amount,
+            "agent_reward": distributable_pool * multiplier,
+            "status": "DIPLOMATIC_IMMUNITY" if is_exempt else "TAXED"
         }
